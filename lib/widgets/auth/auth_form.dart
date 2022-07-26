@@ -1,7 +1,7 @@
 import 'package:chat/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import '../constants/app_custom.dart';
-import '../constants/app_size.dart';
+import '../../constants/app_custom.dart';
+import '../../constants/app_size.dart';
 
 class AuthForm extends StatefulWidget {
   const AuthForm({Key? key, required this.submitFn, required this.isLoading})

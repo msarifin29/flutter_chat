@@ -1,6 +1,6 @@
 import 'package:chat/constants/app_colors.dart';
 import 'package:chat/constants/app_size.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat/widgets/chat/messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class ChatScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
                     Icon(
-                      Icons.logout,
+                      Icons.exit_to_app,
                       color: blackColor,
                     ),
                     Text('logout'),
@@ -35,41 +35,23 @@ class ChatScreen extends StatelessWidget {
                 FirebaseAuth.instance.signOut();
               }
             },
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(
+              Icons.more_vert,
+              color: whiteColor,
+            ),
           ),
           w10,
         ],
       ),
-      body: StreamBuilder(
-        ///Read data
-        ///
-        ///By default, listeners do not update
-        ///if there is a change that only affects the metadata.
-        ///If you want to receive events
-        ///when the document or query metadata changes,
-        ///you can pass (includeMetadataChanges : true) to the snapshots method.
-        stream: FirebaseFirestore.instance
-            .collection('chats/CUijsI0WySiKnNJ4cahW/messages')
-            .snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> streamsnapshot) {
-          if (streamsnapshot.hasError) {
-            return const Text('Something went wrong');
-          }
-          if (streamsnapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          // To acces the document with QuerySnapshot
-          final documents = streamsnapshot.data?.docs;
-          return ListView.builder(
-            itemCount: documents?.length,
-            itemBuilder: (ctx, i) => Container(
-              padding: const EdgeInsets.all(Sizes.s5),
-              child: Text(documents![i]['text']),
+      body: SizedBox(
+        child: Column(
+          // ignore: prefer_const_literals_to_create_immutables
+          children: [
+            const Expanded(
+              child: Messages(),
             ),
-          );
-        },
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
