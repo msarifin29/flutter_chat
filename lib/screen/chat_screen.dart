@@ -1,6 +1,7 @@
 import 'package:chat/constants/app_colors.dart';
 import 'package:chat/constants/app_size.dart';
 import 'package:chat/widgets/chat/messages.dart';
+import 'package:chat/widgets/chat/new_messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -50,13 +51,8 @@ class ChatScreen extends StatelessWidget {
             const Expanded(
               child: Messages(),
             ),
+            const NewMessages(),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(
-          Icons.message,
         ),
       ),
     );
