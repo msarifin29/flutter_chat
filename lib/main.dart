@@ -1,7 +1,9 @@
+import 'package:chat/constants/app_colors.dart';
+import 'package:chat/screen/auth_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:firebase_core/firebase_core.dart';
-import 'screen/chat_screen.dart';
+import 'constants/app_size.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +22,18 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           accentColor: Colors.grey,
         ),
+        backgroundColor: greenColor,
+        buttonTheme: ButtonTheme.of(context).copyWith(
+          buttonColor: greenColor,
+          textTheme: ButtonTextTheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              Sizes.s20,
+            ),
+          ),
+        ),
       ),
-      home: const ChatScreen(),
+      home: const AuthScreen(),
     );
   }
 }
