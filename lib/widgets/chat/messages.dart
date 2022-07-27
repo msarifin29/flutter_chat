@@ -1,4 +1,6 @@
+import 'package:chat/widgets/chat/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Messages extends StatelessWidget {
@@ -6,6 +8,7 @@ class Messages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return StreamBuilder(
       ///Read data
       ///
@@ -21,19 +24,32 @@ class Messages extends StatelessWidget {
             descending: true,
           )
           .snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+      builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+        if (streamSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
         // To acces the document with QuerySnapshot
-        final chatDocs = snapshot.data?.docs;
-        return ListView.builder(
-          itemCount: chatDocs!.length,
-          itemBuilder: (context, index) {
-            return Text(
-              chatDocs[index]['text'],
+        final chatDocs = streamSnapshot.data?.docs;
+        return FutureBuilder(
+          future: Future.value(FirebaseAuth.instance.currentUser),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return ListView.builder(
+              reverse: true,
+              itemCount: chatDocs!.length,
+              itemBuilder: (context, index) {
+                return MessageBubble(
+                  message: chatDocs[index]['text'],
+                  isMe: chatDocs[index]['userId'] == user?.uid,
+                  keyValue: ValueKey(chatDocs[index].id),
+                );
+              },
             );
           },
         );
