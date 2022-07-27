@@ -57,6 +57,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: const ValueKey('email'),
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       label: Text('Email Address'),
@@ -79,6 +80,7 @@ class _AuthFormState extends State<AuthForm> {
                   h10,
                   if (!_isLogin)
                     TextFormField(
+                      key: const ValueKey('username'),
                       decoration: const InputDecoration(
                         label: Text('Username'),
                         border: OutlineInputBorder(
@@ -98,6 +100,7 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                   h10,
                   TextFormField(
+                    key: const ValueKey('password'),
                     decoration: const InputDecoration(
                       label: Text('Password'),
                       border: OutlineInputBorder(
@@ -129,15 +132,12 @@ class _AuthFormState extends State<AuthForm> {
                           },
                         );
                       },
-                      child: _isLogin
-                          ? Text(
-                              'Create new account',
-                              style: customStyle(),
-                            )
-                          : Text(
-                              'I already have an account',
-                              style: customStyle(),
-                            ),
+                      child: Text(
+                        _isLogin
+                            ? 'Create new account'
+                            : 'I already have an account',
+                        style: customStyle(),
+                      ),
                     ),
                 ],
               ),
