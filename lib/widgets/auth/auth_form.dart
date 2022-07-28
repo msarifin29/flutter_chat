@@ -1,4 +1,5 @@
 import 'package:chat/constants/app_colors.dart';
+import 'package:chat/widgets/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
 import '../../constants/app_custom.dart';
 import '../../constants/app_size.dart';
@@ -55,7 +56,9 @@ class _AuthFormState extends State<AuthForm> {
             child: Form(
               key: _formKey,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!_isLogin) const UserImagePicker(),
                   TextFormField(
                     key: const ValueKey('email'),
                     keyboardType: TextInputType.emailAddress,
