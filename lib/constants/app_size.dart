@@ -6,7 +6,9 @@ class Sizes {
   static const s10 = 10.0;
   static const s16 = 16.0;
   static const s20 = 20.0;
+  static const s40 = 40.0;
   static const s50 = 50.0;
+  static const s150 = 150.0;
   static const s200 = 200.0;
 }
 
@@ -19,4 +21,8 @@ const h20 = SizedBox(
 
 const w10 = SizedBox(
   width: Sizes.s10,
+);
+
+const w5 = SizedBox(
+  width: Sizes.s5,
 );

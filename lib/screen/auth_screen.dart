@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:chat/widgets/auth/auth_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool isLoading = false;
 
   void _submitAuthForm(String email, String userName, String password,
-      bool isLogin, BuildContext ctx) async {
+      bool isLogin, File? image, BuildContext ctx) async {
     UserCredential authResult;
     try {
       setState(
@@ -33,12 +36,33 @@ class _AuthScreenState extends State<AuthScreen> {
         // Create a new user account with email and password
         authResult = await credential.createUserWithEmailAndPassword(
             email: email, password: password);
+
+        /// First child reference
+        /// points to 'user_image'
+        ///
+        /// Second Child references can also take paths
+        ///  points to 'authResult.user.uid' + .jpg
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child('${authResult.user!.uid} .jpg');
+
+        /// Method automatically infers the MIME type from the File extension
+        await ref.putFile(image!);
+
+        // Download file
+        final url = await ref.getDownloadURL();
+
         // Storing extra data user
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
             .set(
-          {'username': userName, 'email': email},
+          {
+            'username': userName,
+            'email': email,
+            'image_url': url,
+          },
         );
       }
     } on PlatformException catch (error) {
@@ -51,11 +75,13 @@ class _AuthScreenState extends State<AuthScreen> {
           content: Text(message),
         ),
       );
-      setState(
-        () {
-          isLoading = false;
-        },
-      );
+      if (mounted) {
+        setState(
+          () {
+            isLoading = false;
+          },
+        );
+      }
     }
   }
 

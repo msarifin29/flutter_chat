@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:chat/constants/app_colors.dart';
 import 'package:chat/widgets/pickers/user_image_picker.dart';
 import 'package:flutter/material.dart';
-import '../../constants/app_custom.dart';
+import '../../commons/custom_button.dart';
 import '../../constants/app_size.dart';
 
 class AuthForm extends StatefulWidget {
@@ -9,7 +11,7 @@ class AuthForm extends StatefulWidget {
       : super(key: key);
 
   final void Function(String email, String userName, String password,
-      bool isLogin, BuildContext ctx) submitFn;
+      bool isLogin, File? image, BuildContext ctx) submitFn;
   final bool isLoading;
   @override
   State<AuthForm> createState() => _AuthFormState();
@@ -18,21 +20,37 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
   // ignore: unused_field
-  var _userName = '';
+  String _userName = '';
   // ignore: unused_field
-  var _userEmail = '';
+  String _userEmail = '';
   // ignore: unused_field
-  var _userPassword = '';
-  var _isLogin = true;
+  String _userPassword = '';
+  bool _isLogin = true;
+  File? _userImageFile;
+
+  // Upload image from device to storage
+  void _uploadImage(File image) {
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
+
+    if (_userImageFile == null && !_isLogin) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please pick an image'),
+        ),
+      );
+      return;
+    }
+
     if (isValid) {
       _formKey.currentState!.save();
       // Use those values to send our auth request
       widget.submitFn(_userEmail.trim(), _userName.trim(), _userPassword.trim(),
-          _isLogin, context);
+          _isLogin, _userImageFile, context);
     }
   }
 
@@ -58,7 +76,10 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!_isLogin) const UserImagePicker(),
+                  if (!_isLogin)
+                    UserImagePicker(
+                      pickImageFn: _uploadImage,
+                    ),
                   TextFormField(
                     key: const ValueKey('email'),
                     keyboardType: TextInputType.emailAddress,

@@ -13,15 +13,38 @@ class MessageBubble extends StatelessWidget {
     required this.isMe,
     required this.keyValue,
     required this.userName,
+    required this.userImage,
   }) : super(key: key);
 
   final String message;
   final bool isMe;
   final Key keyValue;
   final String userName;
+  final String userImage;
 
   @override
   Widget build(BuildContext context) {
+    return isMe
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              customChatBubble(context),
+              customImage(),
+              w5,
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              w5,
+              customImage(),
+              customChatBubble(context),
+            ],
+          );
+  }
+
+  Row customChatBubble(BuildContext context) {
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
@@ -63,6 +86,15 @@ class MessageBubble extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  CircleAvatar customImage() {
+    return CircleAvatar(
+      backgroundColor: greyColor,
+      backgroundImage: NetworkImage(
+        userImage,
+      ),
     );
   }
 }

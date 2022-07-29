@@ -31,6 +31,7 @@ class _NewMessagesState extends State<NewMessages> {
         'createAt': Timestamp.now(),
         'userId': user?.uid,
         'username': userData.data()!['username'],
+        'userImage': userData.data()!['image_url'],
       },
     );
     // delete the text that has been sent

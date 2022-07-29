@@ -1,11 +1,20 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:chat/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:chat/constants/app_colors.dart';
+
+import '../../constants/app_size.dart';
+
 class UserImagePicker extends StatefulWidget {
-  const UserImagePicker({Key? key}) : super(key: key);
+  const UserImagePicker({
+    Key? key,
+    required this.pickImageFn,
+  }) : super(key: key);
+
+  final void Function(File pickedImage) pickImageFn;
 
   @override
   State<UserImagePicker> createState() => _UserImagePickerState();
@@ -18,7 +27,12 @@ class _UserImagePickerState extends State<UserImagePicker> {
   void _pickImage() async {
     final ImagePicker picker = ImagePicker();
     // Pick an image, it will return XFile
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: Sizes.s50.toInt(),
+      maxWidth: Sizes.s150,
+      maxHeight: Sizes.s150,
+    );
     if (image != null) {
       // Convert XFile to File
       final File imagefile = File(image.path);
@@ -26,6 +40,9 @@ class _UserImagePickerState extends State<UserImagePicker> {
         () {
           _pickedImages = imagefile;
         },
+      );
+      widget.pickImageFn(
+        File(imagefile.path),
       );
     }
   }
@@ -35,7 +52,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
     return Column(
       children: [
         CircleAvatar(
-          radius: 40.0,
+          radius: Sizes.s40,
           backgroundColor: greyColor,
           backgroundImage:
               _pickedImages != null ? FileImage(_pickedImages!) : null,
