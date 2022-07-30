@@ -3,10 +3,41 @@ import 'package:chat/constants/app_size.dart';
 import 'package:chat/widgets/chat/messages.dart';
 import 'package:chat/widgets/chat/new_messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final fm = FirebaseMessaging.instance;
+    // Android applications are not required to request permission.
+    fm.requestPermission();
+
+    /// To listen to messages whilst your application is in the foreground
+    FirebaseMessaging.onMessage.listen((message) {
+      // ignore: avoid_print
+      print(message);
+      return;
+    });
+
+    /// Also handle any interaction when the app is in the background via a
+    /// Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // ignore: avoid_print
+      print(message);
+      return;
+    });
+    // subscribe to topic on each app start-up
+    fm.subscribeToTopic('chat');
+  }
 
   @override
   Widget build(BuildContext context) {
